@@ -2,22 +2,37 @@ const express = require("express")
 const mongoose = require("mongoose")
 const cors = require("cors")
 const app =express()
-const {courseproduct} = require("./model/course")
+const {coursemodel} = require("./model/course")
 app.use(cors())
-
-app.listen(8080,()=>{
-    console.log("server started")
-})
+mongoose.connect("mongodb+srv://mercy1112:mercy1112@cluster0.8x8j3ya.mongodb.net/courseDB?retryWrites=true&w=majority&appName=Cluster0")
 app.use(express.json())
 
+
+
+
 app.get("/view",(req,res)=>{
-    res.send("VIEW")
+    coursemodel.find().then(
+        (data)=>{
+            res.json(data)
+        }
+    ).catch((error)=>{
+        res.send("error")
+    })
+    
 })
 
 app.post("/add",(req,res)=>{
-    res.send("ADD")
+    let input = req.body
+    let course = new coursemodel(input)
+    console.log(course)
+    course.save()
+    res.json({"status":"ADD"})
 })
 
-app.search("/search",(req,res)=>{
+app.post("/search",(req,res)=>{
     res.send("SEARCH")
+})
+
+app.listen(8080,()=>{
+    console.log("server started")
 })
